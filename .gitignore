@@ -1,3 +1,14 @@
+# Output folder
+_site/
+
+# RStudio project files
+.Rproj.user/
+.Rhistory
+.RData
+
+# System files
+.DS_Store
+
 .Rproj.user
 .Rhistory
 .RData

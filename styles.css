@@ -1,1 +1,38 @@
 /* css styles */
+/* 日式简约字体 + 清爽留白 */
+
+body {
+  font-family: "Noto Sans JP", "Yu Gothic", "Helvetica Neue", sans-serif;
+  background-color: #fdfdfb;
+  color: #1a1a1a;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  padding-top: 1.2rem;
+}
+
+.navbar-brand {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.navbar {
+  border-bottom: 1px solid #eee;
+}
+
+.sidebar nav {
+  background-color: #f9f9f9;
+}
+
+h1, h2, h3 {
+  font-weight: 500;
+  color: #333;
+}
+
+a {
+  color: #0066aa;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

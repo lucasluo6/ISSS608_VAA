@@ -2,18 +2,37 @@ project:
   type: website
 
 website:
-  title: "ISSS608_VAA"
+  title: "ISSS608 - Visual Analytics"
+  page-navigation: true
   navbar:
+    background: white
+    foreground: black
+    logo: images/logo.png
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - text: Hands-on Exercise
+        menu:
+          - hands-on/ex1.qmd
+          - hands-on/ex2.qmd
+      - text: In-class Exercise
+        menu:
+          - in-class/ex1.qmd
+      - text: Take-home Exercise
+        menu:
+          - take-home/ex1.qmd
 
+  page-footer:
+    center: "© 2025 Lucas Luo ｜ SMU ISSS608"
+    background: white
+    foreground: "#888888"
 format:
   html:
-    theme: cosmo
+    theme: lux
     css: styles.css
     toc: true
+    toc-location: right
+    fontsize: 1.05em
+    smooth-scroll: true
 
-editor: visual
 

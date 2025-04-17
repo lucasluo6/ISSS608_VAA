@@ -1,12 +1,35 @@
 ---
-title: "ISSS608_VAA"
+title: "ISSS608 - Visual Analytics"
+format:
+  html:
+    page-layout: full
+    toc: false
 ---
 
-This is a Quarto website.
+<div style="text-align:center; padding-top: 2rem; padding-bottom: 2rem;">
+  <h1 style="font-weight:500; font-size:2.5rem; margin-bottom:0.2em;">Welcome to ISSS608</h1>
+  <p style="font-size:1.2rem; color:#555;">
+    A Visual Analytics Journey through Data, Design, and Discovery
+  </p>
+</div>
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+---
 
-```{r}
-4+4
+### ✦ Hands-on Exercises
 
-```
+- [Exercise 1](hands-on/ex1.qmd)
+- [Exercise 2](hands-on/ex2.qmd)
+
+### ✦ In-class Exercises
+
+- [In-class 1](in-class/ex1.qmd)
+
+### ✦ Take-home Exercises
+
+- [Take-home 1](take-home/ex1.qmd)
+
+---
+
+<div style="text-align:center; margin-top: 4rem; font-size: 0.95rem; color: #999;">
+  © 2025 Lucas Luo · Singapore Management University
+</div>

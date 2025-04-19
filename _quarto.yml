@@ -1,6 +1,6 @@
 project:
   type: website
-
+    
 website:
   title: "ISSS608 - Visual Analytics"
   page-navigation: true
@@ -13,7 +13,8 @@ website:
         text: Home
       - text: Hands-on Exercise
         menu:
-          - hands-on/ex1.qmd
+          - text: "Exercise 1"
+            href: Hands-on_Exercise/Hands-on_Ex01/Hands-on_Ex01.qmd
           - hands-on/ex2.qmd
       - text: In-class Exercise
         menu:

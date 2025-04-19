@@ -17,7 +17,7 @@ format:
 
 ### ✦ Hands-on Exercises
 
-- [Exercise 1](hands-on/ex1.qmd)
+- [Exercise 1](Hands-on_Exercise/Hands-on_Ex01/Hands-on_Ex01.qmd)
 - [Exercise 2](hands-on/ex2.qmd)
 
 ### ✦ In-class Exercises

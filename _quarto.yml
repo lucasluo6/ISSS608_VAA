@@ -13,7 +13,7 @@ website:
         text: Home
       - text: Hands-on Exercise
         menu:
-          - text: "Exercise 1"
+          - text: Exercise01
             href: Hands-on_Exercise/Hands-on_Ex01/Hands-on_Ex01.qmd
           - hands-on/ex2.qmd
       - text: In-class Exercise

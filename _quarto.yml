@@ -39,4 +39,5 @@ format:
     fontsize: 1.05em
     smooth-scroll: true
 
+editor: visual
 

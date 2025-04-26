@@ -1,6 +1,8 @@
 project:
   type: website
-    
+execute:
+  browser: true
+  
 website:
   title: "ISSS608 - Visual Analytics"
   page-navigation: true

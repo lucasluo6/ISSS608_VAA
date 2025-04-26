@@ -135,7 +135,6 @@ ggplot(data=exam_data,
   ggtitle("Distribution of Maths scores") +
   theme_ipsum()
 ```
-
 ### The code
 ```{r, eval=FALSE}
 ggplot(data=exam_data, aes(x = MATHS)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + ggtitle("Distribution of Maths scores") + theme_ipsum()
@@ -182,12 +181,13 @@ p1 <- ggplot(data=exam_data,
 
 ### The code
 ```{r, eval=FALSE}
-p1 \<- ggplot(data=exam_data, aes(x = MATHS)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + coord_cartesian(xlim=c(0,100)) + ggtitle("Distribution of Maths scores")
+p1 <- ggplot(data=exam_data, aes(x = MATHS)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + coord_cartesian(xlim=c(0,100)) + ggtitle("Distribution of Maths scores")
 ```
 :::
 
-Next ::: panel-tabset \### The plot
-
+Next 
+::: panel-tabset 
+### The plot
 ```{r plot-ggrepel09, echo=FALSE}
 p2 <- ggplot(data=exam_data, 
              aes(x = ENGLISH)) +
@@ -198,7 +198,6 @@ p2 <- ggplot(data=exam_data,
   coord_cartesian(xlim=c(0,100)) +
   ggtitle("Distribution of English scores")
 ```
-
 ### The code
 ```{r, eval=FALSE}
 p2 \<- ggplot(data=exam_data, aes(x = ENGLISH)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + coord_cartesian(xlim=c(0,100)) + ggtitle("Distribution of English scores")
@@ -207,7 +206,6 @@ p2 \<- ggplot(data=exam_data, aes(x = ENGLISH)) + geom_histogram(bins=20, bounda
 
 ::: panel-tabset
 ### The plot
-
 ```{r plot-ggrepel10, echo=FALSE}
 p3 <- ggplot(data=exam_data, 
              aes(x= MATHS, 
@@ -219,10 +217,9 @@ p3 <- ggplot(data=exam_data,
                   ylim=c(0,100)) +
   ggtitle("English scores versus Maths scores for Primary 3")
 ```
-
 ### The code
 ```{r, eval=FALSE}
-p3 \<- ggplot(data=exam_data, aes(x= MATHS, y=ENGLISH)) + geom_point() + geom_smooth(method=lm, size=0.5) +\
+p3 <- ggplot(data=exam_data, aes(x= MATHS, y=ENGLISH)) + geom_point() + geom_smooth(method=lm, size=0.5) +
 coord_cartesian(xlim=c(0,100), ylim=c(0,100)) + ggtitle("English scores versus Maths scores for Primary 3")
 ```
 :::

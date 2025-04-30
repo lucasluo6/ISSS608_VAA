@@ -3,10 +3,12 @@ title: "Hands-on Ex02"
 author: "Lucas Luo"
 date: "Apr 24 2025"
 date-modified: "last-modified"
+format: html
 execute: 
   eval: true
   echo: true
   message: false
+  warning: false
   freeze: true
 ---
 
@@ -52,6 +54,7 @@ ggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) + geom_point() + geom_smoo
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 ggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) + geom_point() + geom_smooth(method = "lm", size = 0.5) + geom_label_repel(aes(label = ID), size = 2.5) + coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) + ggtitle("English scores versus Maths scores for Primary 3")
 ```
@@ -77,6 +80,7 @@ ggplot(data=exam_data,
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 ggplot(data=exam_data, aes(x= MATHS, y=ENGLISH)) + geom_point() + geom_smooth(method=lm, size=0.5) +\
 geom_label_repel(aes(label = ID), fontface = "bold") + coord_cartesian(xlim=c(0,100), ylim=c(0,100)) + ggtitle("English scores versus Maths scores for Primary 3")
@@ -100,6 +104,7 @@ ggplot(data=exam_data,
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 ggplot(data=exam_data, aes(x = MATHS)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + theme_gray() + ggtitle("Distribution of Maths scores")
 ```
@@ -122,6 +127,7 @@ ggplot(data=exam_data,
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 ggplot(data=exam_data, aes(x = MATHS)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + ggtitle("Distribution of Maths scores") + theme_economist()
 ```
@@ -142,7 +148,9 @@ ggplot(data=exam_data,
   ggtitle("Distribution of Maths scores") +
   theme_ipsum()
 ```
+
 ### The code
+
 ```{r, eval=FALSE}
 ggplot(data=exam_data, aes(x = MATHS)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + ggtitle("Distribution of Maths scores") + theme_ipsum()
 ```
@@ -165,14 +173,17 @@ ggplot(data=exam_data,
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 ggplot(data=exam_data, aes(x = MATHS)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + ggtitle("Distribution of Maths scores") + theme_ipsum(axis_title_size = 18, base_size = 15, grid = "Y")
 ```
 :::
 
 ## **2.5 Beyond Single Graph**
+
 ::: panel-tabset
 ### The plot
+
 ```{r plot-ggrepel07, echo=FALSE}
 p1<-ggplot(data=exam_data, 
              aes(x = MATHS)) +
@@ -187,15 +198,17 @@ p1
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 p1 <- ggplot(data=exam_data, aes(x = MATHS)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + coord_cartesian(xlim=c(0,100)) + ggtitle("Distribution of Maths scores")
 ```
 :::
 
-Next 
+Next
 
-::: panel-tabset 
+::: panel-tabset
 ### The plot
+
 ```{r plot-ggrepel08, echo=FALSE}
 p2 <- ggplot(data=exam_data, 
              aes(x = ENGLISH)) +
@@ -207,7 +220,9 @@ p2 <- ggplot(data=exam_data,
   ggtitle("Distribution of English scores")
 p2
 ```
+
 ### The code
+
 ```{r, eval=FALSE}
 p2 <- ggplot(data=exam_data, aes(x = ENGLISH)) + geom_histogram(bins=20, boundary = 100, color="grey25", fill="grey90") + coord_cartesian(xlim=c(0,100)) + ggtitle("Distribution of English scores")
 ```
@@ -215,6 +230,7 @@ p2 <- ggplot(data=exam_data, aes(x = ENGLISH)) + geom_histogram(bins=20, boundar
 
 ::: panel-tabset
 ### The plot
+
 ```{r plot-ggrepel10, echo=FALSE}
 p3 <- ggplot(data=exam_data, 
              aes(x= MATHS, 
@@ -228,7 +244,9 @@ p3 <- ggplot(data=exam_data,
 
 p3
 ```
+
 ### The code
+
 ```{r, eval=FALSE}
 p3 <- ggplot(data=exam_data, aes(x= MATHS, y=ENGLISH)) + geom_point() + geom_smooth(method=lm, size=0.5) +
 coord_cartesian(xlim=c(0,100), ylim=c(0,100)) + ggtitle("English scores versus Maths scores for Primary 3")
@@ -257,6 +275,7 @@ p1 + p2
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 p1 + p2
 ```
@@ -267,11 +286,12 @@ p1 + p2
 ::: panel-tabset
 ### The plot
 
-```{r plot-ggrepel12, echo=FALSE}
+```{r  fig.width=12, plot-ggrepel12, echo=FALSE}
 (p1 / p2) | p3
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 (p1 / p2) | p3
 ```
@@ -282,14 +302,15 @@ p1 + p2
 ::: panel-tabset
 ### The plot
 
-```{r plot-ggrepel13, echo=FALSE}
+```{r  fig.width=12, plot-ggrepel13, echo=FALSE}
 ((p1 / p2) | p3) + 
   plot_annotation(tag_levels = 'I')
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
-((p1 / p2) \| p3) + plot_annotation(tag_levels = 'I')
+((p1 / p2) | p3) + plot_annotation(tag_levels = 'I')
 ```
 :::
 
@@ -307,6 +328,7 @@ p3 + inset_element(p2,
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 p3 + inset_element(p2, left = 0.02, bottom = 0.7, right = 0.5, top = 1)
 ```
@@ -317,12 +339,13 @@ p3 + inset_element(p2, left = 0.02, bottom = 0.7, right = 0.5, top = 1)
 ::: panel-tabset
 ### The plot
 
-```{r plot-ggrepel15, echo=FALSE}
+```{r  fig.width=13,plot-ggrepel15, echo=FALSE}
 patchwork <- (p1 / p2) | p3
 patchwork & theme_economist()
 ```
 
 ### The code
+
 ```{r, eval=FALSE}
 patchwork \<- (p1 / p2) \| p3 patchwork & theme_economist()
 ```

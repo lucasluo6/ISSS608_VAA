@@ -1,0 +1,85 @@
+---
+title: "Take-home_Ex01"
+author: "Lucas Luo"
+date: "Apr 30 2025"
+date-modified: "last-modified"
+
+format:
+  html:
+    code-tools: true          
+    code-fold: true          
+    toc: true
+    theme: lux
+
+execute: 
+  eval: true
+  echo: true
+  message: false
+  warning: false
+  freeze: true
+---
+## 📘 Background
+
+In today’s digital media landscape, the power of data storytelling lies not only in accuracy but also in design clarity and visual impact. As the graphical editor for a local online publication, I was tasked to design static data visualisations to accompany an article exploring the demographic structure and distribution of Singapore in 2024.
+
+To complete this assignment, I use the official dataset from the Department of Statistics Singapore (DOS), focusing on age and gender distribution across planning areas and subzones. The visualisation process emphasises design principles that are enlightening, truthful, and reproducible.
+
+This write-up documents the data processing steps, visualisation techniques, and key insights derived from the analysis. It consists of two main phases: (1) creating original static charts based on demographic themes; (2) reviewing a peer submission and improving it through constructive critique and visual makeover.
+
+---
+## 🚀 Getting Started
+
+This project is completed using the following R packages:
+
+- [**ggiraph**](https://davidgohel.github.io/ggiraph/) for enhancing ggplot2 graphics with interactivity.
+- [**plotly**](https://plotly.com/r/) for building interactive statistical plots (though not required for static charts, it may assist in exploration).
+- [**DT**](https://rstudio.github.io/DT/) for generating dynamic data tables on HTML pages.
+- [**tidyverse**](https://www.tidyverse.org/) for data manipulation, wrangling, and static chart creation.
+- [**patchwork**](https://patchwork.data-imaginist.com/) for arranging multiple ggplot charts in a composite layout.
+
+```{r, "code-fold"=TRUE, "code-summary"="▼ Load required packages"}
+pacman::p_load(ggiraph, plotly, patchwork, DT, tidyverse)
+```
+
+##🧼 Data Import and Cleaning
+The dataset titled Singapore Residents by Planning Area/Subzone, Single Year of Age and Sex, June 2024 was obtained from the Department of Statistics Singapore and includes demographic details broken down by planning area, subzone, age, and sex.
+
+```{r}
+# Read cleaned dataset
+exam_data <- read_csv("data/respopagesex2024.csv")
+
+# Standardise column names
+exam_data <- exam_data %>%
+  rename(
+    Planning_Area = PA,
+    Subzone = SZ,
+    Age = Age,
+    Sex = Sex,
+    Population = Pop,
+    Year = Time
+  ) %>%
+  filter(Year == 2024) %>%
+  mutate(
+    Age = as.integer(Age),
+    Sex = ifelse(Sex == "Males", "Male", "Female")
+  )
+```
+✅ The dataset contains over 12,000 rows, representing Singapore’s residents by age and gender across multiple planning areas and subzones as of June 2024. The cleaned data will be used to generate meaningful visual narratives.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

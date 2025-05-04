@@ -1,5 +1,4 @@
 /* css styles */
-/* 日式简约字体 + 清爽留白 */
 
 body {
   font-family: "Noto Sans JP", "Yu Gothic", "Helvetica Neue", sans-serif;
@@ -35,4 +34,9 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/* Change left border color of .callout */
+.callout-note {
+  border-left: 5px solid #001f3f !important;  /* Replace with your desired color */
 }

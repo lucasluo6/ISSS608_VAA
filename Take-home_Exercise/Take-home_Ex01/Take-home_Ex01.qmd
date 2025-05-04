@@ -18,38 +18,42 @@ execute:
   warning: false
   freeze: true
 ---
+
 ## 📘 Background
 
-In today’s digital media landscape, the power of data storytelling lies not only in accuracy but also in design clarity and visual impact. As the graphical editor for a local online publication, I was tasked to design static data visualisations to accompany an article exploring the demographic structure and distribution of Singapore in 2024.
+In today’s digital media landscape, the effectiveness of data storytelling depends not only on accuracy but also on visual clarity and impact. As the graphical editor for a local online publication, I was tasked with designing static data visualisations to support an article examining the demographic structure and distribution of Singapore in 2024.
 
-To complete this assignment, I use the official dataset from the Department of Statistics Singapore (DOS), focusing on age and gender distribution across planning areas and subzones. The visualisation process emphasises design principles that are enlightening, truthful, and reproducible.
+This assignment draws on the official dataset provided by the Department of Statistics Singapore (DOS), with a focus on the age and gender distribution across planning areas and subzones. The visualisation process prioritises principles of clarity, truthfulness, and reproducibility.
 
-This write-up documents the data processing steps, visualisation techniques, and key insights derived from the analysis. It consists of two main phases: (1) creating original static charts based on demographic themes; (2) reviewing a peer submission and improving it through constructive critique and visual makeover.
+This report outlines the full workflow, including data preparation, visualisation techniques, and key findings. The task is completed in two phases: (1) developing original static charts that highlight meaningful demographic patterns; and (2) evaluating a peer’s submission to provide constructive feedback and produce a visual redesign based on good design principles.
 
----
+------------------------------------------------------------------------
+
 ## 🚀 Getting Started
 
 This project is completed using the following R packages:
 
-- [**ggiraph**](https://davidgohel.github.io/ggiraph/) for enhancing ggplot2 graphics with interactivity.
-- [**plotly**](https://plotly.com/r/) for building interactive statistical plots (though not required for static charts, it may assist in exploration).
-- [**DT**](https://rstudio.github.io/DT/) for generating dynamic data tables on HTML pages.
-- [**tidyverse**](https://www.tidyverse.org/) for data manipulation, wrangling, and static chart creation.
-- [**patchwork**](https://patchwork.data-imaginist.com/) for arranging multiple ggplot charts in a composite layout.
+-   [**ggiraph**](https://davidgohel.github.io/ggiraph/) for enhancing ggplot2 graphics with interactivity.
+-   [**plotly**](https://plotly.com/r/) for building interactive statistical plots (though not required for static charts, it may assist in exploration).
+-   [**DT**](https://rstudio.github.io/DT/) for generating dynamic data tables on HTML pages.
+-   [**tidyverse**](https://www.tidyverse.org/) for data manipulation, wrangling, and static chart creation.
+-   [**patchwork**](https://patchwork.data-imaginist.com/) for arranging multiple ggplot charts in a composite layout.
+-   [**scales**](https://scales.r-lib.org/): for formatting axis labels and annotations (e.g., percentages, commas).
 
 ```{r, "code-fold"=TRUE, "code-summary"="▼ Load required packages"}
-pacman::p_load(ggiraph, plotly, patchwork, DT, tidyverse)
+pacman::p_load(ggiraph, plotly, patchwork, DT, tidyverse, scales)
 ```
 
-##🧼 Data Import and Cleaning
+## 🧼 Data Import and Cleaning
+
 The dataset titled Singapore Residents by Planning Area/Subzone, Single Year of Age and Sex, June 2024 was obtained from the Department of Statistics Singapore and includes demographic details broken down by planning area, subzone, age, and sex.
 
-```{r}
+```{r, "code-fold"=TRUE, "code-summary"="▼ Data Import and Cleaning "}
 # Read cleaned dataset
-exam_data <- read_csv("data/respopagesex2024.csv")
+pop_data <- read_csv("data/respopagesex2024.csv")
 
 # Standardise column names
-exam_data <- exam_data %>%
+pop_data <- pop_data %>%
   rename(
     Planning_Area = PA,
     Subzone = SZ,
@@ -60,26 +64,344 @@ exam_data <- exam_data %>%
   ) %>%
   filter(Year == 2024) %>%
   mutate(
-    Age = as.integer(Age),
+    Age_numeric = ifelse(Age == "90_and_Over", 90, as.integer(Age)),  # 👈 handle 90+
     Sex = ifelse(Sex == "Males", "Male", "Female")
   )
+
+# 🎯 Aggregate population by Planning Area and numeric age
+age_distribution <- pop_data %>%
+  filter(Sex %in% c("Male", "Female")) %>%
+  group_by(Planning_Area, Age_numeric) %>%
+  summarise(Population = sum(Population), .groups = "drop") %>%
+  rename(Age = Age_numeric)
+
+# 🧮 Weighted median function (same as before)
+weighted_median <- function(df) {
+  df <- df[order(df$Age), ]
+  cum_pop <- cumsum(df$Population)
+  cutoff <- sum(df$Population) / 2
+  df$Age[which(cum_pop >= cutoff)[1]]
+}
+
+# 🧾 Compute weighted median by Planning Area
+median_age_summary <- age_distribution %>%
+  group_by(Planning_Area) %>%
+  summarise(Median_Age = weighted_median(cur_data_all()))
+
 ```
-✅ The dataset contains over 12,000 rows, representing Singapore’s residents by age and gender across multiple planning areas and subzones as of June 2024. The cleaned data will be used to generate meaningful visual narratives.
+
+✅ The dataset contains over 60,000 rows, representing Singapore’s residents by age and gender across multiple planning areas and subzones as of June 2024. The cleaned data will be used to generate meaningful visual narratives.
+
+## 📊👥 Visualisation 1: Overview of Singapore’s 2024 Demographics
+
+This set of static charts provides a concise overview of Singapore’s 2024 resident population by gender, age group, and top planning areas. The population pyramid is built by mirroring bar charts for males and females using `ggplot2`, offering an immediate sense of population structure and potential ageing trends.
+
+```{r, fig.width=12, fig.height=7, message=FALSE, warning=FALSE}
+
+# 🎯 1. Gender Distribution (pie chart)
+# Group population by sex and compute percentages
+gender_summary <- pop_data %>%
+  group_by(Sex) %>%
+  summarise(Population = sum(Population), .groups = "drop") %>%
+  mutate(Percent = Population / sum(Population),
+         Label = paste0(percent(Percent, accuracy = 0.1)))  # Keep only percentage
+
+# Generate an enlarged pie chart with simplified labels
+p1 <- ggplot(gender_summary, aes(x = "", y = Population, fill = Sex)) +
+  geom_col(width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = Label), position = position_stack(vjust = 0.5),
+            size = 6, fontface = "bold", color = "black") +
+  scale_fill_manual(values = c("Male" = "#a3c3cc", "Female" = "#d4a5a5")) +
+  labs(title = "Gender Distribution") +
+  theme_void() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+  )
+
+# 🎯 2. Age Group Distribution (bar chart)
+# Categorize ages into 10-year intervals and group by gender
+pyramid_data <- pop_data %>%
+  filter(Sex %in% c("Male", "Female")) %>%
+  mutate(AgeGroup = cut(Age_numeric,
+                        breaks = c(seq(0, 90, 10), Inf),
+                        right = FALSE,
+                        labels = c("0-9", "10-19", "20-29", "30-39",
+                                   "40-49", "50-59", "60-69", "70-79",
+                                   "80-89", "90+"))) %>%
+  group_by(AgeGroup, Sex) %>%
+  summarise(Population = sum(Population), .groups = "drop") %>%
+  mutate(Population = ifelse(Sex == "Male", -Population, Population))
 
 
+# Create grouped population pyramid
+p2 <- ggplot(pyramid_data, aes(x = Population, y = AgeGroup, fill = Sex)) +
+  geom_col(width = 0.9) +
+  scale_x_continuous(labels = function(x) paste0(abs(x / 1000), "k")) +
+  scale_fill_manual(values = c("Male" = "#a3c3cc", "Female" = "#d4a5a5")) +
+  labs(
+    title = "Population Pyramid by Age Group and Gender (2024)",
+    x = "Population",
+    y = "Age Group"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    legend.position = "none"
+  )
 
 
+# 🎯 3. Population Pyramid of Top 10 Planning Areas
+# Compute top 10 planning areas based on combined male and female counts
+# 🔍 Step 1: Identify top 10 planning areas by total population
+top10_pa_names <- pop_data %>%
+  group_by(Planning_Area) %>%
+  summarise(Total = sum(Population), .groups = "drop") %>%
+  arrange(desc(Total)) %>%
+  slice_head(n = 10) %>%
+  pull(Planning_Area)
+
+# 🔍 Step 2: Filter data and calculate male/female population
+top10_pyramid <- pop_data %>%
+  filter(Planning_Area %in% top10_pa_names, Sex %in% c("Male", "Female")) %>%
+  group_by(Planning_Area, Sex) %>%
+  summarise(Population = sum(Population), .groups = "drop") %>%
+  mutate(
+    Population = ifelse(Sex == "Male", -Population, Population),
+    Planning_Area = factor(Planning_Area, levels = rev(top10_pa_names))
+  )
+
+# 📊 Step 3: Plot as population pyramid
+
+p3 <-ggplot(top10_pyramid, aes(x = Population, y = Planning_Area, fill = Sex)) +
+  geom_col(width = 0.7) +
+  scale_x_continuous(labels = function(x) paste0(abs(x / 1000), name = "k")) +
+  scale_fill_manual(values = c("Male" = "#a3c3cc", "Female" = "#d4a5a5")) +
+  labs(
+    title = "Population Pyramid of Top 10 Planning Areas (2024)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+    axis.text = element_text(size = 10),
+    legend.position = "bottom"
+  )
+
+# 🧩 Combine charts with patchwork
+(p1 | p2) / p3 + plot_annotation(
+title = "Singapore’s 2024 Population Overview",
+    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
+)
+
+```
+
+::: {.callout-note title="Insights" callout-color="gray"}
+## INSIGHTS 1
+
+This combined dashboard summarizes Singapore’s population profile from three dimensions. The gender pie chart reveals a nearly balanced population, with **51.3%** female and **48.7%** male residents. The age group bar chart shows the largest cohorts are aged **30–39** and **40–49**, indicating a strong working-age base. Populations taper off significantly after 60, pointing to ageing concerns. In the top 10 planning areas, **Tampines**, **Bedok**, and **Sengkang** emerge as major residential zones, each with substantial and balanced gender distributions. The use of harmonized color tones and minimalist layout enhances clarity while emphasizing Singapore’s demographic **stability** and **urban clustering**.
+:::
+
+## 📊🧓👴 Visualisation 2: Aging Profile by Planning Area (2024)
+
+This set of charts explores Singapore's aging population (age 65 and above) across different planning areas using a combination of proportion-based and gender-disaggregated visualizations. It helps identify which areas face more significant aging trends and whether gender imbalances exist in elderly demographics.
+
+```{r, message=FALSE, warning=FALSE, fig.width=13, fig.height=7}
+# ✅ Step 1: Prepare elderly population share
+pop_age_elderly <- pop_data %>%
+  filter(Sex %in% c("Male", "Female")) %>%
+  mutate(IsElderly = Age_numeric >= 65)
+
+elderly_share <- pop_age_elderly %>%
+  group_by(Planning_Area) %>%
+  summarise(
+    Total = sum(Population),
+    Elderly = sum(Population[IsElderly]),
+    Elderly_Share = Elderly / Total
+  ) %>%
+  arrange(desc(Elderly_Share)) %>%
+  slice_head(n = 15)
+
+elderly_pop <- pop_age_elderly %>%
+  group_by(Planning_Area) %>%
+  summarise(
+    Total = sum(Population),
+    Elderly = sum(Population[IsElderly]),
+  ) %>%
+  arrange(desc(Elderly)) %>%
+  slice_head(n = 15)
+
+# ✅ Step 2: Elderly share bar chart (Top 15)
+chart1 <- ggplot(elderly_share, aes(x = Elderly_Share, y = reorder(Planning_Area, Elderly_Share))) +
+  geom_col(fill = "#9C7C38", width = 0.7) +
+  scale_x_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title = "Top 15 Planning Areas by Elderly Share (65+)",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.y = element_text(size = 10)
+  )
+
+# ✅ Step 3: Population Pyramid of Elderly (65+) in Top 15 Areas
+top15_names <- elderly_pop$Planning_Area
+
+elderly_gender_pop <- pop_age_elderly %>%
+  filter(IsElderly, Planning_Area %in% top15_names) %>%
+  group_by(Planning_Area, Sex) %>%
+  summarise(Pop = sum(Population), .groups = "drop") %>%
+  mutate(Pop = ifelse(Sex == "Male", -Pop, Pop)) %>%
+  mutate(Planning_Area = factor(Planning_Area, levels = rev(top15_names)))
+
+chart2 <- ggplot(elderly_gender_pop, aes(x = Pop, y = Planning_Area, fill = Sex)) +
+  geom_col(width = 0.7) +
+  scale_x_continuous(labels = function(x) paste0(abs(x / 1000), name = "k"))  +
+  scale_fill_manual(values = c("Male" = "#9dbdcb", "Female" = "#d7a1a1")) +
+  labs(
+    title = "Gender Breakdown of Elderly Population",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.y = element_text(size = 10),
+    legend.position = "bottom"
+  )
+
+# ✅ Combine Plots
+(chart1 | chart2)  + plot_annotation(
+title = "Singapore’s 2024 Aging Population by Planning Area",
+    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
+)
 
 
+```
+
+::: {.callout-note title="Insights" callout-color="gray"}
+## INSIGHTS 2
+
+Outram, Ang Mo Kio, and Bukit Merah rank highest by elderly proportion (65+), all exceeding 20% — indicating aging concentration in mature residential estates.
+
+Bedok, Tampines, and Hougang have the largest elderly populations in absolute numbers, reflecting pressure on service supply despite a lower aging ratio.
+
+Gender breakdown reveals a slight predominance of females in the senior age groups, consistent with longevity trends.
+
+Policymakers should differentiate between:
+
+🏘️ High-share areas: prioritize community renewal and age-friendly infrastructure.
+
+🏥 High-count areas: focus on resource capacity and care delivery systems.
+:::
+
+## 📊👶🧠 Visualisation 3:  Visualisation 3: Intergenerational Balance — Elderly vs. Youth
 
 
+This chart identifies planning areas with a potentially shrinking younger population (aged 0–24). It visualizes the **bottom 15 regions by youth share**, helping pinpoint areas that may face future workforce shortages and demographic imbalances. It complements the aging analysis by showing the **flip side of the age spectrum**.
+
+```{r, message=FALSE, warning=FALSE, fig.width=12, fig.height=6}
+# ✅ Step 1: Add Elderly & Youth Flags
+demo_age_flags <- pop_data %>%
+  mutate(
+    IsElderly = Age_numeric >= 65,
+    IsYouth = Age_numeric <= 14
+  )
+
+# ✅ Step 2: Compute Aggregated Age Ratios
+age_ratio_data <- demo_age_flags %>%
+  group_by(Planning_Area) %>%
+  summarise(
+    Total = sum(Population),
+    Elderly = sum(Population[IsElderly]),
+    Youth = sum(Population[IsYouth]),
+    Elderly_Share = Elderly / Total,
+    Youth_Share = Youth / Total,
+    Elderly_to_Youth = Elderly / Youth
+  ) %>%
+  filter(Youth > 0)
+
+# ✅ Step 3: Interactive Scatterplot - Elderly Share vs Total Population
+plot1 <- ggplot(age_ratio_data, aes(x = Total / 1000, y = Elderly_Share)) +
+  geom_point_interactive(aes(
+    tooltip = paste0(
+      Planning_Area, "\n",
+      "Elderly Share: ", percent(Elderly_Share, 1), "\n",
+      "Total Pop: ", comma(Total), "\n",
+      "Elderly Count: ", comma(Elderly), "\n",
+      "Elderly/Youth Ratio: ", round(Elderly_to_Youth, 2)
+    ),
+    data_id = Planning_Area,
+    color = Elderly_to_Youth
+  ), size = 4, alpha = 0.8) +
+  scale_color_gradient(low = "#a0c4ff", high = "#d90429") +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title = "Elderly Share vs Total Population",
+    x = "Total Population (Thousands)",
+    y = "Elderly Share (65+)",
+    color = "Elderly/Youth Ratio"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+# ✅ Step 4: Interactive Scatterplot - Elderly Share vs Youth Share
+plot2 <- ggplot(age_ratio_data, aes(x = Youth_Share, y = Elderly_Share)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "gray") +
+  geom_point_interactive(aes(
+    tooltip = paste0(
+      Planning_Area, "\n",
+      "Youth Share: ", percent(Youth_Share, 1), "\n",
+      "Elderly Share: ", percent(Elderly_Share, 1), "\n",
+      "Elderly/Youth Ratio: ", round(Elderly_to_Youth, 2)
+    ),
+    data_id = Planning_Area,
+    color = Elderly_to_Youth
+  ), size = 4, alpha = 0.8) +
+  scale_x_continuous(labels = percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_color_gradient(low = "#a0c4ff", high = "#ff595e") +
+  labs(
+    title = "Elderly Share vs Youth Share (0–14)",
+    x = "Youth Share",
+    y = "Elderly Share",
+    color = "Elderly/Youth Ratio"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+# ✅ Step 5: Display Combined Interactive Plot (with max width)
+library(ggiraph)
+
+girafe(
+  code = print(plot1 + plot2),
+  width_svg = 16, height_svg = 7,
+  options = list(
+    opts_hover(css = "stroke:black;stroke-width:2px;fill-opacity:1;"),
+    opts_tooltip(css = "background:white;padding:6px;border:1px solid gray;border-radius:4px;font-size:12px;"),
+    opts_sizing(rescale = TRUE, width = 1)
+  )
+)
 
 
+```
+
+::: {.callout-note title="Insights 3" callout-color="gray"}
+## INSIGHTS 3
+
+**Outram** has a high elderly share despite its small total population, indicating mature community concentration.
+
+**Tampines**, **Hougang**, and **Jurong West** show balanced youth-elderly ratios, important for sustainable urban aging.
+
+Points above the 45° line on the right chart suggest elder-heavy imbalance — ideal targets for age-friendly infrastructure.
+:::
 
 
+## **🧲 References**
 
+1.  <https://www.singstat.gov.sg/find-data/search-by-theme/population/population-and-population-structure/visualising-data>
 
+2.  <https://isss608-spacebun.netlify.app/take-home_ex/take-home_ex1/take-home_ex1>
 
-
-
-
+3.  <https://akalestale.netlify.app/take-home_ex/take-home_ex01/take-home_ex01>

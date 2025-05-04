@@ -26,7 +26,8 @@ website:
           - in-class/ex1.qmd
       - text: Take-home Exercise
         menu:
-          - take-home/ex1.qmd
+          - text: Take-Home Ex01
+            href: Take-home_Exercise/Take-home_Ex01/Take-home_Ex01.qmd
 
   page-footer:
     center: "© 2025 Lucas Luo ｜ SMU ISSS608"

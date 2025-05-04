@@ -27,7 +27,7 @@ format:
 
 ### ✦ Take-home Exercises
 
-- [Take-home 1](take-home/ex1.qmd)
+- [Take-home 1](Take-home_Exercise/Take-home_Ex01/Take-home_Ex01.qmd)
 
 ---
 

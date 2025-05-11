@@ -21,6 +21,8 @@ website:
             href: Hands-on_Exercise/Hands-on_Ex02/Hands-on_Ex02.qmd
           - text: Exercise03
             href: Hands-on_Exercise/Hands-on_Ex03/Hands-on_Ex03.qmd
+          - text: Exercise04
+            href: Hands-on_Exercise/Hands-on_Ex04/Hands-on_Ex04.qmd
       - text: In-class Exercise
         menu:
           - in-class/ex1.qmd
@@ -28,7 +30,8 @@ website:
         menu:
           - text: Take-Home Ex01
             href: Take-home_Exercise/Take-home_Ex01/Take-home_Ex01.qmd
-
+          - text: Take-Home Ex01
+            href: Take-home_Exercise/Take-home_Ex01/Take-home_Ex01-phaseII.qmd
   page-footer:
     center: "© 2025 Lucas Luo ｜ SMU ISSS608"
     background: white

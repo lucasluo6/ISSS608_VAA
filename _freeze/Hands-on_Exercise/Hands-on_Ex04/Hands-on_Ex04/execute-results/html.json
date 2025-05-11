@@ -1,0 +1,16 @@
+{
+  "hash": "d76b0513f9be74ec4104e887d6f637e9",
+  "result": {
+    "markdown": "---\ntitle: \"Hands-on_Ex04\"\nauthor: \"Lucas Luo\"\ndate: \"May 07 2025\"\ndate-modified: \"last-modified\"\n\nformat:\n  html:\n    code-tools: true          \n    code-fold: true          \n    toc: true\n    theme: lux\n\nexecute: \n  eval: true\n  echo: true\n  message: false\n  warning: false\n  freeze: true\n---\n\n\n# **Fundamentals of Visualization Analytics**\n\n# **1 Visualizing Distribution**\n\nThe following section was modified according to https://r4va.netlify.app/chap09.\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(ggdist, ggridges, ggthemes,\n               colorspace, tidyverse)\n\nexam_data <- read_csv(\"data/Exam_data.csv\")\n```\n:::\n\n\nVisualizing Distribution with Ridgeline Plot When to Use Ridgeline Plots:\n\nWhen you have a medium to high number of groups (more than 5), as it saves space. If there is a clear pattern or ranking among groups, making insights easier to spot. When you want to efficiently visualize distributions without using separate plots. When Not to Use Ridgeline Plots:\n\nIf there are fewer than 5 groups, other distribution plots (e.g., boxplots) may be better. When groups lack a clear pattern, as overlapping can make the plot messy. If hiding some data due to overlap reduces clarity rather than improving visualization.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nggplot(data = exam_data, \n       aes(x = ENGLISH, \n           y = CLASS)) +\n  geom_density_ridges(\n    scale = 3,\n    rel_min_height = 0.01,\n    bandwidth = 3.4,\n    fill = lighten(\"gray\", .3),\n    color = \"white\"\n  ) +\n  scale_x_continuous(\n    name = \"English grades\",\n    expand = c(0, 0)\n    ) +\n  scale_y_discrete(name = NULL, \n                   expand = expansion(add = c(0.2, 2.6))) +\n  theme_ridges()\n```\n\n::: {.cell-output-display}\n![](Hands-on_Ex04_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n:::\n\n\n### **1.2 Varying fill colors along the x axis**\n",
+    "supporting": [
+      "Hands-on_Ex04_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

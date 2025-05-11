@@ -1,0 +1,61 @@
+---
+title: "Hands-on_Ex04"
+author: "Lucas Luo"
+date: "May 07 2025"
+date-modified: "last-modified"
+
+format:
+  html:
+    code-tools: true          
+    code-fold: true          
+    toc: true
+    theme: lux
+
+execute: 
+  eval: true
+  echo: true
+  message: false
+  warning: false
+  freeze: true
+---
+
+# **Fundamentals of Visualization Analytics**
+
+# **1 Visualizing Distribution**
+
+The following section was modified according to https://r4va.netlify.app/chap09.
+
+```{r}
+pacman::p_load(ggdist, ggridges, ggthemes,
+               colorspace, tidyverse)
+
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+Visualizing Distribution with Ridgeline Plot When to Use Ridgeline Plots:
+
+When you have a medium to high number of groups (more than 5), as it saves space. If there is a clear pattern or ranking among groups, making insights easier to spot. When you want to efficiently visualize distributions without using separate plots. When Not to Use Ridgeline Plots:
+
+If there are fewer than 5 groups, other distribution plots (e.g., boxplots) may be better. When groups lack a clear pattern, as overlapping can make the plot messy. If hiding some data due to overlap reduces clarity rather than improving visualization.
+
+```{r}
+ggplot(data = exam_data, 
+       aes(x = ENGLISH, 
+           y = CLASS)) +
+  geom_density_ridges(
+    scale = 3,
+    rel_min_height = 0.01,
+    bandwidth = 3.4,
+    fill = lighten("gray", .3),
+    color = "white"
+  ) +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+    ) +
+  scale_y_discrete(name = NULL, 
+                   expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+```
+
+### **1.2 Varying fill colors along the x axis**

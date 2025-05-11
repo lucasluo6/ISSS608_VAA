@@ -20,6 +20,7 @@ format:
 - [Exercise 1](Hands-on_Exercise/Hands-on_Ex01/Hands-on_Ex01.qmd)
 - [Exercise 2](Hands-on_Exercise/Hands-on_Ex02/Hands-on_Ex02.qmd)
 - [Exercise 3](Hands-on_Exercise/Hands-on_Ex03/Hands-on_Ex03.qmd)
+- [Exercise 4](Hands-on_Exercise/Hands-on_Ex04/Hands-on_Ex04.qmd)
 
 ### ✦ In-class Exercises
 
@@ -28,7 +29,7 @@ format:
 ### ✦ Take-home Exercises
 
 - [Take-home 1](Take-home_Exercise/Take-home_Ex01/Take-home_Ex01.qmd)
-
+- [Take-home 1](Take-home_Exercise/Take-home_Ex01/Take-home_Ex01-phaseII.qmd)
 ---
 
 <div style="text-align:center; margin-top: 4rem; font-size: 0.95rem; color: #999;">

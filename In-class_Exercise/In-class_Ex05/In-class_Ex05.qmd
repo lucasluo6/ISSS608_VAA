@@ -18,27 +18,32 @@ execute:
   warning: false
   freeze: true
 ---
+
 ```{r}
 pacman::p_load(tidyverse, jsonlite,
                SmartEDA, tidygraph,
                ggraph)
 ```
+
 ```{r}
 kg <- fromJSON("data/MC1_graph.json")
 ```
 
 ### Inspect structure
+
 ```{r}
 str(kg, max.level=1)
 ```
 
 ###Extract and inspect
+
 ```{r}
 nodes_tbl <-as_tibble(kg$nodes)
 edges_tbl <-as_tibble(kg$links)
 ```
 
 ##Initial EDA
+
 ```{r}
 ggplot(data = edges_tbl,
        aes(y =`Edge Type`))+
@@ -70,12 +75,15 @@ edges_tbl <- edges_tbl %>%
   rename(to = index)
 ```
 
-###Step 3 
+###Step 3
+
 ```{r}
 edges_tbl <- edges_tbl %>%
   filter(!is.na(from), !is.na(to))
 ```
+
 ###Step4
+
 ```{r}
 graph <- tbl_graph(nodes = nodes_tbl,
                    edges = edges_tbl,
@@ -83,13 +91,14 @@ graph <- tbl_graph(nodes = nodes_tbl,
 ```
 
 ## visualisting the knowledge graph
+
 ```{r}
 set.seed(1234)
 ```
 
 ### visualising the whole graph
+
 ```{r}
-#| eval: false
 ggraph(graph, layout = "fr")+
   geom_edge_link(alpha = 0.3,
                  colour = "gray")+
@@ -100,9 +109,11 @@ ggraph(graph, layout = "fr")+
                   size = 2.5 )+
   theme_void()
 ```
+
 ### Visualising the sub-graph
 
 #### Step 1 Filter edges to only"Memberof"
+
 ```{r}
 graph_memberof <- graph %>%
   activate(edges)%>%
@@ -110,6 +121,7 @@ graph_memberof <- graph %>%
 ```
 
 #### Step 2 Extract only connected nodes
+
 ```{r}
 used_node_indices <- graph_memberof %>%
   activate(edges) %>%
@@ -119,8 +131,8 @@ used_node_indices <- graph_memberof %>%
   unique()
 ```
 
-
 #### step 3 keep only those nodes
+
 ```{r}
 graph_memberof <- graph_memberof %>%
   activate(nodes)%>%
@@ -130,8 +142,8 @@ graph_memberof <- graph_memberof %>%
 ```
 
 #### plot the sub-graph
+
 ```{r}
-#| eval: false
 ggraph(graph_memberof, layout = "fr")+
   geom_edge_link(alpha = 0.5,
                  colour = "gray")+
@@ -142,6 +154,3 @@ ggraph(graph_memberof, layout = "fr")+
                   size = 2.5 )+
   theme_void()
 ```
-
-
-

@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "ISSS608 - Visual Analytics",
     "section": "",
-    "text": "Welcome to ISSS608\n\n\nA Visual Analytics Journey through Data, Design, and Discovery\n\n\n\n\n✦ Hands-on Exercises\n\nExercise 1\nExercise 2\nExercise 3\nExercise 4\n\n\n\n✦ In-class Exercises\n\nIn-class 1\n\n\n\n✦ Take-home Exercises\n\nTake-home 1\nTake-home 1\n\n\n\n© 2025 Lucas Luo · Singapore Management University"
+    "text": "Welcome to ISSS608\n\n\nA Visual Analytics Journey through Data, Design, and Discovery\n\n\n\n\n✦ Hands-on Exercises\n\nExercise 1\nExercise 2\nExercise 3\nExercise 4\n\n\n\n✦ In-class Exercises\n\nIn-class 5\n\n\n\n✦ Take-home Exercises\n\nTake-home 1\nTake-home 1\n\n\n\n© 2025 Lucas Luo · Singapore Management University"
   },
   {
     "objectID": "about.html",
@@ -341,5 +341,26 @@
     "title": "MC1-In_Class_Ex01",
     "section": "visualisting the knowledge graph",
     "text": "visualisting the knowledge graph\n\n\nCode\nset.seed(1234)\n\n\n\nvisualising the whole graph\n\n\nCode\nggraph(graph, layout = \"fr\")+\n  geom_edge_link(alpha = 0.3,\n                 colour = \"gray\")+\n  geom_node_point(aes(color = `Node Type`),\n                  size = 4 )+\n  geom_node_text(aes(label = name),\n                 repel = TRUE,\n                  size = 2.5 )+\n  theme_void()\n\n\n\n\nVisualising the sub-graph\n\nStep 1 Filter edges to only”Memberof”\n\n\nCode\ngraph_memberof &lt;- graph %&gt;%\n  activate(edges)%&gt;%\n  filter(`Edge Type` == \"MemberOf\")\n\n\n\n\nStep 2 Extract only connected nodes\n\n\nCode\nused_node_indices &lt;- graph_memberof %&gt;%\n  activate(edges) %&gt;%\n  as_tibble() %&gt;%\n  select(from, to) %&gt;%\n  unlist()%&gt;%\n  unique()\n\n\n\n\nstep 3 keep only those nodes\n\n\nCode\ngraph_memberof &lt;- graph_memberof %&gt;%\n  activate(nodes)%&gt;%\n  mutate(row_id = row_number())%&gt;%\n  filter(row_id %in% used_node_indices)%&gt;%\n  select(-row_id)\n\n\n\n\nplot the sub-graph\n\n\nCode\nggraph(graph_memberof, layout = \"fr\")+\n  geom_edge_link(alpha = 0.5,\n                 colour = \"gray\")+\n  geom_node_point(aes(color = `Node Type`),\n                  size = 1 )+\n  geom_node_text(aes(label = name),\n                 repel = TRUE,\n                  size = 2.5 )+\n  theme_void()"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex05/In-class_Ex05.html",
+    "href": "In-class_Exercise/In-class_Ex05/In-class_Ex05.html",
+    "title": "MC1-In_Class_Ex01",
+    "section": "",
+    "text": "Code\npacman::p_load(tidyverse, jsonlite,\n               SmartEDA, tidygraph,\n               ggraph)\nCode\nkg &lt;- fromJSON(\"data/MC1_graph.json\")"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex05/In-class_Ex05.html#creating-knowlede-graph",
+    "href": "In-class_Exercise/In-class_Ex05/In-class_Ex05.html#creating-knowlede-graph",
+    "title": "MC1-In_Class_Ex01",
+    "section": "Creating Knowlede Graph",
+    "text": "Creating Knowlede Graph\nThis is\n\nStep 1: Mapping form node id to row indes\n\n\nCode\nid_map &lt;- tibble(id = nodes_tbl$id,\n                 index=seq_len(\n                   nrow(nodes_tbl)\n                 ))\n\n\nThis ensures each id from your node list is mapped to the correct row number.\n\n\nStep2\n\n\nCode\nedges_tbl &lt;- edges_tbl %&gt;%\n  left_join(id_map, by = c(\"source\" = \"id\"))%&gt;%\n  rename(from = index) %&gt;%\n  left_join(id_map, by = c(\"target\" = \"id\"))%&gt;%\n  rename(to = index)\n\n\n###Step 3\n\n\nCode\nedges_tbl &lt;- edges_tbl %&gt;%\n  filter(!is.na(from), !is.na(to))\n\n\n###Step4\n\n\nCode\ngraph &lt;- tbl_graph(nodes = nodes_tbl,\n                   edges = edges_tbl,\n                   directed = kg$directed)"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex05/In-class_Ex05.html#visualisting-the-knowledge-graph",
+    "href": "In-class_Exercise/In-class_Ex05/In-class_Ex05.html#visualisting-the-knowledge-graph",
+    "title": "MC1-In_Class_Ex01",
+    "section": "visualisting the knowledge graph",
+    "text": "visualisting the knowledge graph\n\n\nCode\nset.seed(1234)\n\n\n\nvisualising the whole graph\n\n\nCode\nggraph(graph, layout = \"fr\")+\n  geom_edge_link(alpha = 0.3,\n                 colour = \"gray\")+\n  geom_node_point(aes(color = `Node Type`),\n                  size = 4 )+\n  geom_node_text(aes(label = name),\n                 repel = TRUE,\n                  size = 2.5 )+\n  theme_void()\n\n\n\n\n\n\n\nVisualising the sub-graph\n\nStep 1 Filter edges to only”Memberof”\n\n\nCode\ngraph_memberof &lt;- graph %&gt;%\n  activate(edges)%&gt;%\n  filter(`Edge Type` == \"MemberOf\")\n\n\n\n\nStep 2 Extract only connected nodes\n\n\nCode\nused_node_indices &lt;- graph_memberof %&gt;%\n  activate(edges) %&gt;%\n  as_tibble() %&gt;%\n  select(from, to) %&gt;%\n  unlist()%&gt;%\n  unique()\n\n\n\n\nstep 3 keep only those nodes\n\n\nCode\ngraph_memberof &lt;- graph_memberof %&gt;%\n  activate(nodes)%&gt;%\n  mutate(row_id = row_number())%&gt;%\n  filter(row_id %in% used_node_indices)%&gt;%\n  select(-row_id)\n\n\n\n\nplot the sub-graph\n\n\nCode\nggraph(graph_memberof, layout = \"fr\")+\n  geom_edge_link(alpha = 0.5,\n                 colour = \"gray\")+\n  geom_node_point(aes(color = `Node Type`),\n                  size = 1 )+\n  geom_node_text(aes(label = name),\n                 repel = TRUE,\n                  size = 2.5 )+\n  theme_void()"
   }
 ]

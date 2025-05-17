@@ -24,7 +24,7 @@ format:
 
 ### ✦ In-class Exercises
 
-- [In-class 1](in-class/ex1.qmd)
+- [In-class 5](In-class_Exercise/In-class_Ex05/In-class_Ex05.qmd)
 
 ### ✦ Take-home Exercises
 

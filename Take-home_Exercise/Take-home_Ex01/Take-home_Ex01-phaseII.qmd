@@ -4,12 +4,7 @@ author: "Lucas Luo"
 date: "May 9 2025"
 date-modified: "last-modified"
 
-format:
-  html:
-    code-tools: true          
-    code-fold: true          
-    toc: true
-    theme: lux
+format: docx
 
 execute: 
   eval: true
